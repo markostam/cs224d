@@ -4,12 +4,10 @@ def sigmoid(x):
     """
     Compute the sigmoid function for the input here.
     """
+
+    sig_x = 1 / (1 + np.exp(-x)) 
     
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
-    
-    return x
+    return sig_x
 
 def sigmoid_grad(f):
     """
@@ -17,29 +15,27 @@ def sigmoid_grad(f):
     for this implementation, the input f should be the sigmoid
     function value of your original input x. 
     """
+
+    sig_grad = f * (1 - f)
     
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
-    
-    return f
+    return sig_grad
 
 def test_sigmoid_basic():
     """
     Some simple tests to get you started. 
     Warning: these are not exhaustive.
     """
-    print "Running basic tests..."
+    print("Running basic tests...")
     x = np.array([[1, 2], [-1, -2]])
     f = sigmoid(x)
     g = sigmoid_grad(f)
-    print f
+    print(f)
     assert np.amax(f - np.array([[0.73105858, 0.88079708], 
         [0.26894142, 0.11920292]])) <= 1e-6
-    print g
+    print(g)
     assert np.amax(g - np.array([[0.19661193, 0.10499359],
         [0.19661193, 0.10499359]])) <= 1e-6
-    print "You should verify these results!\n"
+    print("You should verify these results!\n")
 
 def test_sigmoid(): 
     """
@@ -48,11 +44,11 @@ def test_sigmoid():
     This function will not be called by the autograder, nor will
     your tests be graded.
     """
-    print "Running your tests..."
+    print("Running your tests...")
     ### YOUR CODE HERE
-    raise NotImplementedError
+    #raise NotImplementedError
     ### END YOUR CODE
 
 if __name__ == "__main__":
     test_sigmoid_basic();
-    test_sigmoid()
+    #test_sigmoid()

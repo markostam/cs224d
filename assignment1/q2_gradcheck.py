@@ -22,15 +22,13 @@ def gradcheck_naive(f, x):
         ### try modifying x[ix] with h defined above to compute numerical gradients
         ### make sure you call random.setstate(rndstate) before calling f(x) each time, this will make it 
         ### possible to test cost functions with built in randomness later
+
         random.setstate(rndstate)
-        fx_ix, grad_ix = f(x[ix])
-        random.setstate(rndstate)
-        fx_ix_h, grad_ix_h = f(x[ix] + h)
-        numgrad =  (fx_ix_h - fx_ix) / h
+        numgrad =  (f(x[ix]+h)[0] - f(x[ix]-h)[0]) / (2*h)
 
         # Compare gradients
         reldiff = abs(numgrad - grad[ix]) / max(1, abs(numgrad), abs(grad[ix]))
-        if reldiff > 1e-5:
+        if reldiff > 1e-9:
             print("\nGradient check failed.")
             print("First gradient error found at index {}".format(str(ix)))
             print("Your gradient: {:^10.6} | Numerical gradient: {:^10.6} | Difference: {:^10.6}"

@@ -21,13 +21,14 @@ def softmax(z):
     """
 
     ### YOUR CODE HERE
-    min_max_scale = lambda x : (x-np.min(x))/(np.max(x)-np.min(x))
+    # strip max for numerical stability
+    strip_max = lambda x : (x-np.max(x))
     row_softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
     if len(z.shape) == 1:
-        return row_softmax(min_max_scale(z))
+        return row_softmax(strip_max(z))
     else:
-    	min_max_scaled = np.apply_along_axis(min_max_scale, 1, z)
-    	softmax_out = np.apply_along_axis(row_softmax, 1, min_max_scaled)
+    	max_stripped = np.apply_along_axis(strip_max, 1, z)
+    	softmax_out = np.apply_along_axis(row_softmax, 1, max_stripped)
     	return softmax_out
 
 def test_softmax_basic():
@@ -51,7 +52,7 @@ def test_softmax_basic():
     assert np.amax(np.fabs(test3 - np.array(
         [0.73105858, 0.26894142]))) <= 1e-6
 
-    print("You should verify these results!\n")
+    print("Passed! You should verify these results.\n")
 
 def test_softmax():
     """ 

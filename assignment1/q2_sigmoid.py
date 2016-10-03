@@ -1,11 +1,12 @@
 import numpy as np
+np.seterr(over='ignore')
 
 def sigmoid(x):
     """
     Compute the sigmoid function for the input here.
     """
 
-    sig_x = 1 / (1 + np.exp(-x)) 
+    sig_x = 1. / (1 + np.exp(-x)) 
     
     return sig_x
 

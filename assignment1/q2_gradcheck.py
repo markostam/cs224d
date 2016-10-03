@@ -23,22 +23,20 @@ def gradcheck_naive(f, x):
         ### make sure you call random.setstate(rndstate) before calling f(x) each time, this will make it 
         ### possible to test cost functions with built in randomness later
 
-        # get mask vectors with only the current feature in/decremented
-        mask_p = np.zeros(x.shape)
-        mask_p[ix]+=h
-        mask_m = np.zeros(x.shape)
-        mask_m[ix]-=h
+        # get mask vectors with only the current feature incremented
+        mask = np.zeros(x.shape)
+        mask[ix]+=h
         # calculate output of function with perturbed feature
         random.setstate(rndstate)
-        fp,_ = f(x+mask_p)
+        fp,_ = f(x+mask)
         random.setstate(rndstate)
-        fm,_ = f(x+mask_m)
+        fm,_ = f(x-mask)
 
         numgrad =  np.sum(fp - fm) / (2*h)
 
         # Compare gradients
         reldiff = abs(numgrad - grad[ix]) / max(1, abs(numgrad), abs(grad[ix]))
-        if reldiff > 1e-9:
+        if reldiff > 1e-6:
             print("\nGradient check failed.")
             print("First gradient error found at index {}".format(str(ix)))
             print("Your gradient: {:^10.6} | Numerical gradient: {:^10.6} | Difference: {:^10.6}"

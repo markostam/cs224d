@@ -9,9 +9,9 @@ def normalizeRows(x):
     """ Row normalization function """
     # Implement a function that normalizes each row of a matrix to have unit length
     
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    # length of vector = l2 norm = sqrt(sum(x**2))
+    normalize_vector = lambda x : x/np.linalg.norm(x)
+    x = np.apply_along_axis(normalize_vector, 1, x)
     
     return x
 

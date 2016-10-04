@@ -16,12 +16,12 @@ def normalizeRows(x):
     return x
 
 def test_normalize_rows():
-    print "Testing normalizeRows..."
+    print("Testing normalizeRows...")
     x = normalizeRows(np.array([[3.0,4.0],[1, 2]])) 
     # the result should be [[0.6, 0.8], [0.4472, 0.8944]]
-    print x
+    print(x)
     assert (x.all() == np.array([[0.6, 0.8], [0.4472, 0.8944]]).all())
-    print ""
+    print("")
 
 def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """ Softmax cost function for word2vec models """
@@ -33,7 +33,7 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     
     # Inputs:                                                         
     # - predicted: numpy ndarray, predicted word vector (\hat{v} in 
-    #   the written component or \hat{r} in an earlier version)
+    #   the written component)
     # - target: integer, the index of the target word               
     # - outputVectors: "output" vectors (as rows) for all tokens     
     # - dataset: needed for negative sampling, unused here.         
@@ -49,9 +49,17 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     # free to reference the code you previously wrote for this        
     # assignment!                                                  
     
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    yhat = np.exp(outputVectors[target+1].T.dot(predicted)) / sum(outputVectors.T.dot(predicted))
+    cost = - np.log(yhat)
+    # increment the word prediction vector by the one-hot class vector for cost fxn
+    yhat[target] -= 1
+    gradPred = outputVectors.T.dot(yhat)
+    grad = predicted.dot(yhat.T)
+    # increment the vector back!
+    yhat[target] += 1
+    
+    
+    
     
     return cost, gradPred, grad
 
@@ -73,7 +81,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     # assignment!
     
     ### YOUR CODE HERE
-    raise NotImplementedError
+    #raise NotImplementedError
     ### END YOUR CODE
     
     return cost, gradPred, grad

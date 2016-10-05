@@ -143,14 +143,12 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
     #update cost and grad for each context word
-    #pdb.set_trace()
     for cw in contextWords:
         cwi = tokens[cw]
         cost_word, gradPred_word, grad_word = word2vecCostAndGradient(predicted, cwi, outputVectors, dataset)
         cost += cost_word
         gradOut += grad_word
-        #pdb.set_trace()
-        gradIn[currWordIndex, :] += gradPred_word
+        gradIn[currWordIndex] += gradPred_word
 
 
     return cost, gradIn, gradOut
@@ -174,9 +172,7 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
 
-    ### YOUR CODE HERE
-    #raise NotImplementedError
-    ### END YOUR CODE
+
     
     #return cost, gradIn, gradOut
 

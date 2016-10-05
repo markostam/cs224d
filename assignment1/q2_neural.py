@@ -36,7 +36,7 @@ def forward_backward_prop(data, labels, params, dimensions):
     delta3 = delta2 * sigmoid_grad(h)
     # gradients
     gradW2 = np.dot(h.T,delta1)
-    gradW1= np.dot(data.T,delta3)
+    gradW1 = np.dot(data.T,delta3)
     gradb2 = np.sum(delta1, axis = 0)
     gradb1 = np.sum(delta3, axis = 0)
 

@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import pdb
 
 from q1_softmax import softmax
 from q2_gradcheck import gradcheck_naive
@@ -47,21 +48,17 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     
     # We will not provide starter code for this function, but feel    
     # free to reference the code you previously wrote for this        
-    # assignment!                                                  
-    
-    o = 0 #window size
-    yhat = np.exp(outputVectors[target+o].T.dot(predicted)) / sum(outputVectors.T.dot(predicted))
-    cost = - np.log(yhat)
-    # increment the word prediction vector by the one-hot class vector for cost fxn
-    yhat[target] -= 1
-    gradPred = outputVectors.T.dot(yhat)
-    grad = predicted.dot(yhat.T)
-    # increment the vector back!
-    yhat[target] += 1
-    
-    
-    
-    
+    # assignment!   
+    #pdb.set_trace()
+    yhat = softmax(predicted.dot(outputVectors.T))
+    # only look at given class because of one-hot vector
+    cost = - np.log(yhat[target])
+    # increment the word prediction vector by the one-hot class vector for each
+    incremented = yhat
+    incremented[target] -= 1
+    gradPred = outputVectors.T.dot(incremented)
+    grad = (predicted.reshape(((predicted.shape[0]),1))*incremented.reshape(((incremented.shape[0]),1)).T).T
+
     return cost, gradPred, grad
 
 def negSamplingCostAndGradient(predicted, target, outputVectors, dataset, 
@@ -81,14 +78,13 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     # free to reference the code you previously wrote for this        
     # assignment!
     
-    o = 0 # window size
     random_indices = np.random.randint(outputVectors.shape[0], size=K)
-    cost = - np.log(sigmoid(outputVectors[target+o].T.dot(target))) - \
-             np.sum(np.log(sigmoid(-outputVectors[[random_indices]].T.dot(target))))
-    gradPred = sigmoid(outputVectors[target+o].T.dot(target) -1) - \
-               np.sum((sigmoid(-outputVectors[[random_indices]].T.dot(target)) - 1) * \
-               outputVectors[[random_indices]])
-    grad =  - sigmoid(-outputVectors[[random_indices]].T.dot(target) - 1)*target
+    cost = - np.log(sigmoid(outputVectors.dot(predicted))) - \
+             np.sum(np.log(sigmoid(-outputVectors[[random_indices]].dot(predicted))))
+    gradPred =  (sigmoid(outputVectors.dot(predicted)) - 1).reshape((outputVectors.shape[0],1))*(outputVectors) - \
+             np.sum(((sigmoid(-outputVectors[[random_indices]].dot(predicted)) - 1)*outputVectors[[random_indices]].T).T,0)
+
+    grad =  (sigmoid(outputVectors.dot(predicted)) - 1).reshape((outputVectors.shape[0],1))*(predicted)
 
     return cost, gradPred, grad
 
@@ -102,7 +98,8 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     # Inputs:                                                         
     # - currrentWord: a string of the current center word           
     # - C: integer, context size                                    
-    # - contextWords: list of no more than 2*C strings, the context words                                             # - tokens: a dictionary that maps words to their indices in    
+    # - contextWords: list of no more than 2*C strings, the context words
+    # - tokens: a dictionary that maps words to their indices in    
     #      the word vector list                                
     # - inputVectors: "input" word vectors (as rows) for all tokens           
     # - outputVectors: "output" word vectors (as rows) for all tokens         
@@ -118,16 +115,24 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     # free to reference the code you previously wrote for this        
     # assignment!
 
-    # output word vectors for all outer (context) words
-    u_W = outputVectors[[tokens[w] for w in contextWords]]
-    # input word vector for center word
-    v_c = inputVectors[tokens[currentWord]]
-    # output vectors for entire corpus
+    currWordIndex = tokens[currentWord]
+    predicted = inputVectors[currWordIndex, :]
     
-    windex = [i for i in range(-C,C+1) if i != 0]
-    #lam_func = lambda x: word2vecCostAndGradient(v_c, x, outputVectors, dataset)
-    cost, gradIn, gradOut = np.sum((word2vecCostAndGradient(v_c, x, outputVectors, dataset) \
-                                   for x in range(-C,C+1) if x != 0),0)
+    #initialize cost and grads to zero
+    cost = 0.0
+    gradIn = np.zeros(inputVectors.shape)
+    gradOut = np.zeros(outputVectors.shape)
+    #update cost and grad for each context word
+    #pdb.set_trace()
+    for cw in contextWords:
+        cwi = tokens[cw]
+        cost_word, gradPred_word, grad_word = word2vecCostAndGradient(predicted, cwi, outputVectors, dataset)
+        cost += cost_word
+        gradOut += grad_word
+        #pdb.set_trace()
+        gradIn[currWordIndex, :] += gradPred_word
+
+
     return cost, gradIn, gradOut
 
 def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors, 

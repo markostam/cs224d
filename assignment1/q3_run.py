@@ -27,7 +27,7 @@ wordVectors0 = sgd(
     lambda vec: word2vec_sgd_wrapper(skipgram, tokens, vec, dataset, C, 
     	negSamplingCostAndGradient), 
     wordVectors, 0.3, 40000, None, True, PRINT_EVERY=10)
-print "sanity check: cost at convergence should be around or below 10"
+print("sanity check: cost at convergence should be around or below 10")
 
 # sum the input and output word vectors
 wordVectors = (wordVectors0[:nWords,:] + wordVectors0[nWords:,:])

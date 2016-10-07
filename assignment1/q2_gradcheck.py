@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import pdb
 
 # First implement a gradient checker by filling in the following functions
 def gradcheck_naive(f, x):

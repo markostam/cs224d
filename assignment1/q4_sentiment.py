@@ -8,9 +8,9 @@ from q4_softmaxreg import softmaxRegression, getSentenceFeature, accuracy, softm
 
 # Try different regularizations and pick the best!
 # NOTE: fill in one more "your code here" below before running!
-REGULARIZATION = None   # Assign a list of floats in the block below
+REGULARIZATION = [.0001,.0003,.001,.003,.01,.03,.1,.3,1,3]   # Assign a list of floats in the block below
 ### YOUR CODE HERE
-raise NotImplementedError
+#raise NotImplementedError
 ### END YOUR CODE
 
 # Load the dataset
@@ -28,7 +28,7 @@ trainset = dataset.getTrainSentences()
 nTrain = len(trainset)
 trainFeatures = np.zeros((nTrain, dimVectors))
 trainLabels = np.zeros((nTrain,), dtype=np.int32)
-for i in xrange(nTrain):
+for i in range(nTrain):
     words, trainLabels[i] = trainset[i]
     trainFeatures[i, :] = getSentenceFeature(tokens, wordVectors, words)
 
@@ -37,7 +37,7 @@ devset = dataset.getDevSentences()
 nDev = len(devset)
 devFeatures = np.zeros((nDev, dimVectors))
 devLabels = np.zeros((nDev,), dtype=np.int32)
-for i in xrange(nDev):
+for i in range(nDev):
     words, devLabels[i] = devset[i]
     devFeatures[i, :] = getSentenceFeature(tokens, wordVectors, words)
 
@@ -47,7 +47,7 @@ for regularization in REGULARIZATION:
     random.seed(3141)
     np.random.seed(59265)
     weights = np.random.randn(dimVectors, 5)
-    print "Training for reg=%f" % regularization 
+    print("Training for reg=%f" % regularization) 
 
     # We will do batch optimization
     weights = sgd(lambda weights: softmax_wrapper(trainFeatures, trainLabels, 
@@ -56,12 +56,12 @@ for regularization in REGULARIZATION:
     # Test on train set
     _, _, pred = softmaxRegression(trainFeatures, trainLabels, weights)
     trainAccuracy = accuracy(trainLabels, pred)
-    print "Train accuracy (%%): %f" % trainAccuracy
+    print("Train accuracy (%%): %f" % trainAccuracy)
 
     # Test on dev set
     _, _, pred = softmaxRegression(devFeatures, devLabels, weights)
     devAccuracy = accuracy(devLabels, pred)
-    print "Dev accuracy (%%): %f" % devAccuracy
+    print("Dev accuracy (%%): %f" % devAccuracy)
 
     # Save the results and weights
     results.append({
@@ -70,16 +70,16 @@ for regularization in REGULARIZATION:
         "train" : trainAccuracy, 
         "dev" : devAccuracy})
 
-# Print the accuracies
-print ""
-print "=== Recap ==="
-print "Reg\t\tTrain\t\tDev"
+# print(the accuracies
+print('')
+print("=== Recap ===")
+print("Reg\t\tTrain\t\tDev")
 for result in results:
-    print "%E\t%f\t%f" % (
+    print("%E\t%f\t%f" % (
         result["reg"], 
         result["train"], 
-        result["dev"])
-print ""
+        result["dev"]))
+print("")
 
 # Pick the best regularization parameters
 BEST_REGULARIZATION = None
@@ -94,13 +94,13 @@ testset = dataset.getTestSentences()
 nTest = len(testset)
 testFeatures = np.zeros((nTest, dimVectors))
 testLabels = np.zeros((nTest,), dtype=np.int32)
-for i in xrange(nTest):
+for i in range(nTest):
     words, testLabels[i] = testset[i]
     testFeatures[i, :] = getSentenceFeature(tokens, wordVectors, words)
 
 _, _, pred = softmaxRegression(testFeatures, testLabels, BEST_WEIGHTS)
-print "Best regularization value: %E" % BEST_REGULARIZATION
-print "Test accuracy (%%): %f" % accuracy(testLabels, pred)
+print("Best regularization value: %E" % BEST_REGULARIZATION)
+print("Test accuracy (%%): %f" % accuracy(testLabels, pred))
 
 # Make a plot of regularization vs accuracy
 plt.plot(REGULARIZATION, [x["train"] for x in results])

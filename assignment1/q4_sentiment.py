@@ -8,7 +8,7 @@ from q4_softmaxreg import softmaxRegression, getSentenceFeature, accuracy, softm
 
 # Try different regularizations and pick the best!
 # NOTE: fill in one more "your code here" below before running!
-REGULARIZATION = [.0001,.0003,.001,.003,.01,.03,.1,.3,1,3]   # Assign a list of floats in the block below
+REGULARIZATION = [.00001,.00003,.0001]   # Assign a list of floats in the block below
 ### YOUR CODE HERE
 #raise NotImplementedError
 ### END YOUR CODE
@@ -82,12 +82,10 @@ for result in results:
 print("")
 
 # Pick the best regularization parameters
-BEST_REGULARIZATION = None
-BEST_WEIGHTS = None
+bestDev = max(results, key=lambda x:x['dev'])
 
-### YOUR CODE HERE 
-raise NotImplementedError
-### END YOUR CODE
+BEST_REGULARIZATION = bestDev['reg']
+BEST_WEIGHTS = bestDev['weights']
 
 # Test your findings on the test set
 testset = dataset.getTestSentences()

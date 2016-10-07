@@ -136,7 +136,7 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     # assignment!
 
     currWordIndex = tokens[currentWord]
-    predicted = inputVectors[currWordIndex, :]
+    predicted = inputVectors[currWordIndex]
     
     #initialize cost and grads to zero
     cost = 0.0

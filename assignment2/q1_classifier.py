@@ -53,8 +53,8 @@ class SoftmaxModel(Model):
 
     (Don't change the variable names)
     """
-    self.input_placeholder = tf.placeholder(tf.float32, shape=(batch_size, n_features))
-    self.labels_placeholder = tf.placeholder(tf.float32, shape=(batch_size, n_classes))
+    self.input_placeholder = tf.placeholder(tf.float32, shape=(self.config.batch_size, self.config.n_features))
+    self.labels_placeholder = tf.placeholder(tf.float32, shape=(self.config.batch_size, self.config.n_classes))
 
 
   def create_feed_dict(self, input_batch, label_batch):
@@ -82,7 +82,7 @@ class SoftmaxModel(Model):
         self.input_placeholder: input_batch,
         self.labels_placeholder: label_batch,
     }
-    
+
     return feed_dict
 
   def add_training_op(self, loss):
@@ -128,9 +128,12 @@ class SoftmaxModel(Model):
     Returns:
       out: A tensor of shape (batch_size, n_classes)
     """
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    with tf.name_scope("core_transform"):
+      W = tf.Variable(tf.zeros([self.config.n_features,self.config.batch_size]), name = 'W1')
+      b = tf.Variable(tf.zeros([self.config.n_features]), name = 'b1')
+      z = tf.matmul(W,input_data) + b
+      out = softmax(z)
+
     return out
 
   def add_loss_op(self, pred):
@@ -235,7 +238,7 @@ def test_SoftmaxModel():
   # If ops are implemented correctly, the average loss should fall close to zero
   # rapidly.
   assert losses[-1] < .5
-  print "Basic (non-exhaustive) classifier tests pass\n"
+  print ("Basic (non-exhaustive) classifier tests pass\n")
 
 if __name__ == "__main__":
     test_SoftmaxModel()

@@ -53,9 +53,9 @@ class SoftmaxModel(Model):
 
     (Don't change the variable names)
     """
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    self.input_placeholder = tf.placeholder(tf.float32, shape=(batch_size, n_features))
+    self.labels_placeholder = tf.placeholder(tf.float32, shape=(batch_size, n_classes))
+
 
   def create_feed_dict(self, input_batch, label_batch):
     """Creates the feed_dict for softmax classifier.
@@ -78,9 +78,11 @@ class SoftmaxModel(Model):
     Returns:
       feed_dict: The feed dictionary mapping from placeholders to values.
     """
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    feed_dict = {
+        self.input_placeholder: input_batch,
+        self.labels_placeholder: label_batch,
+    }
+    
     return feed_dict
 
   def add_training_op(self, loss):
